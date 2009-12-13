@@ -657,7 +657,7 @@ set_az( self, val )
 
 
 
-MODULE=Astro::Nova	PACKAGE=Astro::Nova::Zonedate
+MODULE=Astro::Nova	PACKAGE=Astro::Nova::ZoneDate
 
 struct ln_zonedate*
 new(CLASS)

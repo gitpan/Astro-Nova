@@ -4,6 +4,10 @@ use 5.008;
 use strict;
 use warnings;
 
+# note: internal modules loaded after XS below.
+
+our $VERSION = '0.02';
+
 require Exporter;
 
 our @ISA = qw(Exporter);
@@ -244,10 +248,12 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.01';
-
 require XSLoader;
 XSLoader::load('Astro::Nova', $VERSION);
+
+require Astro::Nova::ZoneDate;
+require Astro::Nova::DMS;
+require Astro::Nova::LnLatPosn;
 
 1;
 __END__
@@ -580,7 +586,8 @@ is intialized to zero.
     int minutes
     double seconds
   
-  Astro::Nova::DMS, ln_dms
+L<Astro::Nova::DMS>, C<ln_dms>
+
     unsigned short  neg
     unsigned short  degrees
     unsigned short  minutes
@@ -625,7 +632,8 @@ is intialized to zero.
     double  omega
     double  JD
   
-  Astro::Nova::LnLatPosn, ln_lnlat_posn
+L<Astro::Nova::LnLatPosn>, C<ln_lnlat_posn>
+
     double  lng
     double  lat
   
@@ -651,7 +659,8 @@ is intialized to zero.
     double  set
     double  transit
   
-  Astro::Nova::Zonedate, ln_zonedate
+L<Astro::Nova::ZoneDate>, C<ln_zonedate>
+
     int  years
     int  months
     int  days
