@@ -6,7 +6,7 @@ use warnings;
 
 # note: internal modules loaded after XS below.
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 require Exporter;
 
@@ -253,6 +253,7 @@ XSLoader::load('Astro::Nova', $VERSION);
 
 require Astro::Nova::ZoneDate;
 require Astro::Nova::DMS;
+require Astro::Nova::HMS;
 require Astro::Nova::LnLatPosn;
 
 1;
@@ -573,8 +574,11 @@ The C<ln_> prefix has been stripped.
 libnova defines several structs for passing data to or receiving results from the
 functions. These have been wrapped as Perl classes. Below is a list of the struct names,
 their Perl class names, and their data members (including the C types). The class
-constructors currently, do B<not> take arguments. Instead, you need to use the accessors
-for the individual data members. If a member is called C<L>, then there will be
+constructors optionally take key/value pairs as argument that correspond to the
+struct members. Any extra parameters that aren't struct members are currently simply
+ignored. Any struct members that aren't explicitly set will be set to zero.
+
+If a member is called C<L>, then there will be
 two methods C<get_L> and C<set_L> for getting/setting the data. All numeric data
 is intialized to zero.
 
@@ -585,7 +589,7 @@ is intialized to zero.
     int hours
     int minutes
     double seconds
-  
+
 L<Astro::Nova::DMS>, C<ln_dms>
 
     unsigned short  neg
@@ -614,8 +618,9 @@ L<Astro::Nova::DMS>, C<ln_dms>
     double  L
     double  B
     double  R
-  
-  Astro::Nova::HMS, ln_hms
+
+L<Astro::Nova::HMS>, ln_hms
+
     unsigned short  hours
     unsigned short  minutes
     double  seconds
@@ -631,7 +636,7 @@ L<Astro::Nova::DMS>, C<ln_dms>
     double  w
     double  omega
     double  JD
-  
+
 L<Astro::Nova::LnLatPosn>, C<ln_lnlat_posn>
 
     double  lng
@@ -658,7 +663,7 @@ L<Astro::Nova::LnLatPosn>, C<ln_lnlat_posn>
     double  rise
     double  set
     double  transit
-  
+
 L<Astro::Nova::ZoneDate>, C<ln_zonedate>
 
     int  years

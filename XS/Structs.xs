@@ -4,18 +4,55 @@
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::GalPosn
 
 struct ln_gal_posn*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct ln_gal_posn*)safemalloc( sizeof( struct ln_gal_posn ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct ln_gal_posn");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::GalPosn");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct ln_gal_posn*)safemalloc( sizeof(struct ln_gal_posn) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct ln_gal_posn");
+          XSRETURN_UNDEF;
+        }
         RETVAL->l = 0.;
         RETVAL->b = 0.;
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::GalPosn");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "l", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->l = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "b", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->b = SvNV(*saveSV);
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -59,22 +96,79 @@ set_b( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::Date
 
 struct ln_date*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct ln_date*)safemalloc( sizeof( struct ln_date ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct ln_date");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::Date");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct ln_date*)safemalloc( sizeof(struct ln_date) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct ln_date");
+          XSRETURN_UNDEF;
+        }
         RETVAL->seconds = 0.;
         RETVAL->hours = 0;
         RETVAL->years = 0;
         RETVAL->minutes = 0;
         RETVAL->days = 0;
         RETVAL->months = 0;
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::Date");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "seconds", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->seconds = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "hours", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->hours = SvIV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "years", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->years = SvIV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "minutes", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->minutes = SvIV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "days", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->days = SvIV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "months", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->months = SvIV(*saveSV);
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -182,18 +276,55 @@ set_months( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::LnLatPosn
 
 struct ln_lnlat_posn*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct ln_lnlat_posn*)safemalloc( sizeof( struct ln_lnlat_posn ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct ln_lnlat_posn");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::LnLatPosn");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct ln_lnlat_posn*)safemalloc( sizeof(struct ln_lnlat_posn) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct ln_lnlat_posn");
+          XSRETURN_UNDEF;
+        }
         RETVAL->lat = 0.;
         RETVAL->lng = 0.;
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::LnLatPosn");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "lat", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->lat = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "lng", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->lng = SvNV(*saveSV);
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -237,19 +368,61 @@ set_lng( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::HMS
 
 struct ln_hms*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct ln_hms*)safemalloc( sizeof( struct ln_hms ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct ln_hms");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::HMS");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct ln_hms*)safemalloc( sizeof(struct ln_hms) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct ln_hms");
+          XSRETURN_UNDEF;
+        }
         RETVAL->seconds = 0.;
         RETVAL->hours = 0;
         RETVAL->minutes = 0;
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::HMS");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "seconds", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->seconds = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "hours", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->hours = SvIV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "minutes", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->minutes = SvIV(*saveSV);
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -309,20 +482,67 @@ set_minutes( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::DMS
 
 struct ln_dms*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct ln_dms*)safemalloc( sizeof( struct ln_dms ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct ln_dms");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::DMS");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct ln_dms*)safemalloc( sizeof(struct ln_dms) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct ln_dms");
+          XSRETURN_UNDEF;
+        }
         RETVAL->seconds = 0.;
         RETVAL->minutes = 0;
         RETVAL->neg = 0;
         RETVAL->degrees = 0;
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::DMS");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "seconds", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->seconds = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "minutes", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->minutes = SvIV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "neg", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->neg = SvIV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "degrees", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->degrees = SvIV(*saveSV);
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -398,18 +618,71 @@ set_degrees( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::HEquPosn
 
 struct lnh_equ_posn*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct lnh_equ_posn*)safemalloc( sizeof( struct lnh_equ_posn ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct lnh_equ_posn");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::HEquPosn");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct lnh_equ_posn*)safemalloc( sizeof(struct lnh_equ_posn) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct lnh_equ_posn");
+          XSRETURN_UNDEF;
+        }
         Zero(&(RETVAL->ra), 1, struct ln_hms);
         Zero(&(RETVAL->dec), 1, struct ln_dms);
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::HEquPosn");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "ra", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          if ( sv_isobject(*saveSV) && (SvTYPE(SvRV(*saveSV)) == SVt_PVMG) ) {
+          struct ln_hms* original = (struct ln_hms*)SvIV((SV*)SvRV( *saveSV )); 
+          Copy(original, &(RETVAL->ra), 1, struct ln_hms);
+        }
+        else {
+          warn("Invalid argument passed to constructor");
+          XSRETURN_UNDEF;
+        }
+        
+        }
+
+        saveSV = hv_fetchs(tmphash, "dec", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          if ( sv_isobject(*saveSV) && (SvTYPE(SvRV(*saveSV)) == SVt_PVMG) ) {
+          struct ln_dms* original = (struct ln_dms*)SvIV((SV*)SvRV( *saveSV )); 
+          Copy(original, &(RETVAL->dec), 1, struct ln_dms);
+        }
+        else {
+          warn("Invalid argument passed to constructor");
+          XSRETURN_UNDEF;
+        }
+        
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -467,18 +740,71 @@ set_dec( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::HLnLatPosn
 
 struct lnh_lnlat_posn*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct lnh_lnlat_posn*)safemalloc( sizeof( struct lnh_lnlat_posn ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct lnh_lnlat_posn");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::HLnLatPosn");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct lnh_lnlat_posn*)safemalloc( sizeof(struct lnh_lnlat_posn) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct lnh_lnlat_posn");
+          XSRETURN_UNDEF;
+        }
         Zero(&(RETVAL->lat), 1, struct ln_dms);
         Zero(&(RETVAL->lng), 1, struct ln_dms);
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::HLnLatPosn");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "lat", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          if ( sv_isobject(*saveSV) && (SvTYPE(SvRV(*saveSV)) == SVt_PVMG) ) {
+          struct ln_dms* original = (struct ln_dms*)SvIV((SV*)SvRV( *saveSV )); 
+          Copy(original, &(RETVAL->lat), 1, struct ln_dms);
+        }
+        else {
+          warn("Invalid argument passed to constructor");
+          XSRETURN_UNDEF;
+        }
+        
+        }
+
+        saveSV = hv_fetchs(tmphash, "lng", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          if ( sv_isobject(*saveSV) && (SvTYPE(SvRV(*saveSV)) == SVt_PVMG) ) {
+          struct ln_dms* original = (struct ln_dms*)SvIV((SV*)SvRV( *saveSV )); 
+          Copy(original, &(RETVAL->lng), 1, struct ln_dms);
+        }
+        else {
+          warn("Invalid argument passed to constructor");
+          XSRETURN_UNDEF;
+        }
+        
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -536,18 +862,71 @@ set_lng( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::HHrzPosn
 
 struct lnh_hrz_posn*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct lnh_hrz_posn*)safemalloc( sizeof( struct lnh_hrz_posn ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct lnh_hrz_posn");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::HHrzPosn");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct lnh_hrz_posn*)safemalloc( sizeof(struct lnh_hrz_posn) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct lnh_hrz_posn");
+          XSRETURN_UNDEF;
+        }
         Zero(&(RETVAL->alt), 1, struct ln_dms);
         Zero(&(RETVAL->az), 1, struct ln_dms);
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::HHrzPosn");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "alt", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          if ( sv_isobject(*saveSV) && (SvTYPE(SvRV(*saveSV)) == SVt_PVMG) ) {
+          struct ln_dms* original = (struct ln_dms*)SvIV((SV*)SvRV( *saveSV )); 
+          Copy(original, &(RETVAL->alt), 1, struct ln_dms);
+        }
+        else {
+          warn("Invalid argument passed to constructor");
+          XSRETURN_UNDEF;
+        }
+        
+        }
+
+        saveSV = hv_fetchs(tmphash, "az", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          if ( sv_isobject(*saveSV) && (SvTYPE(SvRV(*saveSV)) == SVt_PVMG) ) {
+          struct ln_dms* original = (struct ln_dms*)SvIV((SV*)SvRV( *saveSV )); 
+          Copy(original, &(RETVAL->az), 1, struct ln_dms);
+        }
+        else {
+          warn("Invalid argument passed to constructor");
+          XSRETURN_UNDEF;
+        }
+        
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -605,18 +984,55 @@ set_az( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::HrzPosn
 
 struct ln_hrz_posn*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct ln_hrz_posn*)safemalloc( sizeof( struct ln_hrz_posn ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct ln_hrz_posn");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::HrzPosn");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct ln_hrz_posn*)safemalloc( sizeof(struct ln_hrz_posn) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct ln_hrz_posn");
+          XSRETURN_UNDEF;
+        }
         RETVAL->alt = 0.;
         RETVAL->az = 0.;
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::HrzPosn");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "alt", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->alt = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "az", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->az = SvNV(*saveSV);
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -660,14 +1076,27 @@ set_az( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::ZoneDate
 
 struct ln_zonedate*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct ln_zonedate*)safemalloc( sizeof( struct ln_zonedate ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct ln_zonedate");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::ZoneDate");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct ln_zonedate*)safemalloc( sizeof(struct ln_zonedate) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct ln_zonedate");
+          XSRETURN_UNDEF;
+        }
         RETVAL->seconds = 0.;
         RETVAL->hours = 0;
         RETVAL->gmtoff = 0;
@@ -675,8 +1104,57 @@ new(CLASS)
         RETVAL->minutes = 0;
         RETVAL->days = 0;
         RETVAL->months = 0;
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::ZoneDate");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "seconds", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->seconds = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "hours", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->hours = SvIV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "gmtoff", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->gmtoff = SvIV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "years", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->years = SvIV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "minutes", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->minutes = SvIV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "days", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->days = SvIV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "months", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->months = SvIV(*saveSV);
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -800,21 +1278,73 @@ set_months( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::ParOrbit
 
 struct ln_par_orbit*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct ln_par_orbit*)safemalloc( sizeof( struct ln_par_orbit ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct ln_par_orbit");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::ParOrbit");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct ln_par_orbit*)safemalloc( sizeof(struct ln_par_orbit) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct ln_par_orbit");
+          XSRETURN_UNDEF;
+        }
         RETVAL->w = 0.;
         RETVAL->omega = 0.;
         RETVAL->q = 0.;
         RETVAL->JD = 0.;
         RETVAL->i = 0.;
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::ParOrbit");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "w", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->w = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "omega", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->omega = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "q", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->q = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "JD", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->JD = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "i", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->i = SvNV(*saveSV);
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -906,14 +1436,27 @@ set_i( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::EllOrbit
 
 struct ln_ell_orbit*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct ln_ell_orbit*)safemalloc( sizeof( struct ln_ell_orbit ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct ln_ell_orbit");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::EllOrbit");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct ln_ell_orbit*)safemalloc( sizeof(struct ln_ell_orbit) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct ln_ell_orbit");
+          XSRETURN_UNDEF;
+        }
         RETVAL->w = 0.;
         RETVAL->e = 0.;
         RETVAL->n = 0.;
@@ -921,8 +1464,57 @@ new(CLASS)
         RETVAL->omega = 0.;
         RETVAL->JD = 0.;
         RETVAL->i = 0.;
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::EllOrbit");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "w", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->w = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "e", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->e = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "n", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->n = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "a", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->a = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "omega", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->omega = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "JD", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->JD = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "i", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->i = SvNV(*saveSV);
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -1046,19 +1638,61 @@ set_i( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::Nutation
 
 struct ln_nutation*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct ln_nutation*)safemalloc( sizeof( struct ln_nutation ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct ln_nutation");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::Nutation");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct ln_nutation*)safemalloc( sizeof(struct ln_nutation) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct ln_nutation");
+          XSRETURN_UNDEF;
+        }
         RETVAL->ecliptic = 0.;
         RETVAL->obliquity = 0.;
         RETVAL->longitude = 0.;
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::Nutation");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "ecliptic", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->ecliptic = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "obliquity", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->obliquity = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "longitude", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->longitude = SvNV(*saveSV);
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -1118,19 +1752,61 @@ set_longitude( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::RectPosn
 
 struct ln_rect_posn*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct ln_rect_posn*)safemalloc( sizeof( struct ln_rect_posn ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct ln_rect_posn");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::RectPosn");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct ln_rect_posn*)safemalloc( sizeof(struct ln_rect_posn) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct ln_rect_posn");
+          XSRETURN_UNDEF;
+        }
         RETVAL->Z = 0.;
         RETVAL->X = 0.;
         RETVAL->Y = 0.;
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::RectPosn");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "Z", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->Z = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "X", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->X = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "Y", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->Y = SvNV(*saveSV);
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -1190,19 +1866,61 @@ set_Y( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::HelioPosn
 
 struct ln_helio_posn*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct ln_helio_posn*)safemalloc( sizeof( struct ln_helio_posn ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct ln_helio_posn");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::HelioPosn");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct ln_helio_posn*)safemalloc( sizeof(struct ln_helio_posn) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct ln_helio_posn");
+          XSRETURN_UNDEF;
+        }
         RETVAL->R = 0.;
         RETVAL->B = 0.;
         RETVAL->L = 0.;
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::HelioPosn");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "R", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->R = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "B", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->B = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "L", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->L = SvNV(*saveSV);
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -1262,22 +1980,79 @@ set_L( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::HypOrbit
 
 struct ln_hyp_orbit*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct ln_hyp_orbit*)safemalloc( sizeof( struct ln_hyp_orbit ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct ln_hyp_orbit");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::HypOrbit");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct ln_hyp_orbit*)safemalloc( sizeof(struct ln_hyp_orbit) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct ln_hyp_orbit");
+          XSRETURN_UNDEF;
+        }
         RETVAL->w = 0.;
         RETVAL->e = 0.;
         RETVAL->omega = 0.;
         RETVAL->q = 0.;
         RETVAL->JD = 0.;
         RETVAL->i = 0.;
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::HypOrbit");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "w", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->w = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "e", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->e = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "omega", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->omega = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "q", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->q = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "JD", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->JD = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "i", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->i = SvNV(*saveSV);
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -1385,18 +2160,55 @@ set_i( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::EquPosn
 
 struct ln_equ_posn*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct ln_equ_posn*)safemalloc( sizeof( struct ln_equ_posn ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct ln_equ_posn");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::EquPosn");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct ln_equ_posn*)safemalloc( sizeof(struct ln_equ_posn) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct ln_equ_posn");
+          XSRETURN_UNDEF;
+        }
         RETVAL->ra = 0.;
         RETVAL->dec = 0.;
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::EquPosn");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "ra", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->ra = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "dec", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->dec = SvNV(*saveSV);
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)
@@ -1440,19 +2252,61 @@ set_dec( self, val )
 MODULE=Astro::Nova	PACKAGE=Astro::Nova::RstTime
 
 struct ln_rst_time*
-new(CLASS)
-	char *CLASS
+new(class, ...)
+        SV* class
+    PREINIT:
+        char* CLASS;
+        HV* tmphash;
+        int iStack;
+        SV** saveSV;
     CODE:
-	RETVAL = (struct ln_rst_time*)safemalloc( sizeof( struct ln_rst_time ) );
-	if( RETVAL == NULL ){
-		warn("unable to malloc struct ln_rst_time");
-		XSRETURN_UNDEF;
-	}
+        if (sv_isobject(class)) {
+          CLASS = (char*)sv_reftype(SvRV(class), 1);
+        }
+        else {
+          if (!SvPOK(class))
+            croak("Need an object or class name as first argument to the constructor of Astro::Nova::RstTime");
+          CLASS = (char*)SvPV_nolen(class);
+        }
+        RETVAL = (struct ln_rst_time*)safemalloc( sizeof(struct ln_rst_time) );
+        if (RETVAL == NULL) {
+          warn("unable to malloc struct ln_rst_time");
+          XSRETURN_UNDEF;
+        }
         RETVAL->rise = 0.;
         RETVAL->transit = 0.;
         RETVAL->set = 0.;
+        if (items > 1) {
+          if (!(items % 2)) {
+            safefree(RETVAL);
+            croak("Uneven number of arguments to constructor of Astro::Nova::RstTime");
+          }
+          tmphash = (HV*)sv_2mortal((SV*)newHV());
+          for (iStack = 1; iStack < items; iStack += 2) {
+            HE *he;
+            he = hv_store_ent(tmphash, ST(iStack), newSVsv(ST(iStack+1)), 0);
+            if (!he)
+              croak("Failed to write value to hash.");
+          }
+        saveSV = hv_fetchs(tmphash, "rise", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->rise = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "transit", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->transit = SvNV(*saveSV);
+        }
+
+        saveSV = hv_fetchs(tmphash, "set", 0);
+        if (saveSV != NULL && SvOK(*saveSV)) {
+          RETVAL->set = SvNV(*saveSV);
+        }
+
+        }
     OUTPUT:
-	RETVAL
+        RETVAL
+        
 
 void
 DESTROY(self)

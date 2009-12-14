@@ -66,8 +66,9 @@ This class represents a libnova C<ln_lnlat_posn> struct. The struct has the foll
 
 =head2 new
 
-Constructor returns a new C<Astro::Nova::LnLatPosn>. Doesn't take any arguments
-at the moment.
+Constructor returns a new C<Astro::Nova::LnLatPosn>.
+Optionally takes key/value pairs for setting the struct members.
+Extra arguments are ignored. Uninitialized struct members are set to zero.
 
 =head2 get_... / set_...
 
@@ -91,6 +92,8 @@ Returns a human-readable ASCII table of the date information.
 Returns a list of all members in order.
 
 =head1 SEE ALSO
+
+L<Astro::Nova>
 
 libnova website: L<http://libnova.sourceforge.net/>
 
