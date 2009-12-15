@@ -1,21 +1,43 @@
---- #YAML:1.0
-name:               Astro-Nova
-version:            0.03
-abstract:           Perl interface to libnova
+---
+name: Astro-Nova
+version: 0.04
 author:
-    - Steffen Mueller <smueller@cpan.org>
-license:            unknown
-distribution_type:  module
-configure_requires:
-    ExtUtils::MakeMaker:  0
+  - 'Steffen Mueller <smueller@cpan.org>'
+abstract: Perl interface to libnova
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
 build_requires:
-    ExtUtils::MakeMaker:  0
-requires:  {}
-no_index:
-    directory:
-        - t
-        - inc
-generated_by:       ExtUtils::MakeMaker version 6.54
+  Cwd: 0
+  ExtUtils::CBuilder: 0.15
+  ExtUtils::Typemap: 0.03
+  Module::Build: 0
+  Test::More: 0
+requires:
+  Carp: 0
+  Exporter: 0
+  File::Spec: 0
+  XSLoader: 0
+configure_requires:
+  File::Spec: 0
+  FindBin: 0
+  Module::Build: 0
+  lib: 0
+dynamic_config: 0
+provides:
+  Astro::Nova:
+    file: lib/Astro/Nova.pm
+    version: 0.04
+  Astro::Nova::DMS:
+    file: lib/Astro/Nova/DMS.pm
+  Astro::Nova::HMS:
+    file: lib/Astro/Nova/HMS.pm
+  Astro::Nova::LnLatPosn:
+    file: lib/Astro/Nova/LnLatPosn.pm
+  Astro::Nova::ZoneDate:
+    file: lib/Astro/Nova/ZoneDate.pm
+generated_by: Module::Build version 0.35
 meta-spec:
-    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
-    version:  1.4
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+distribution_type: module
