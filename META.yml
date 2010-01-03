@@ -1,6 +1,6 @@
 ---
 name: Astro-Nova
-version: 0.05
+version: 0.06
 author:
   - 'Steffen Mueller <smueller@cpan.org>'
 abstract: Perl interface to libnova
@@ -27,9 +27,13 @@ dynamic_config: 0
 provides:
   Astro::Nova:
     file: lib/Astro/Nova.pm
-    version: 0.05
+    version: 0.06
   Astro::Nova::DMS:
     file: lib/Astro/Nova/DMS.pm
+  Astro::Nova::EquPosn:
+    file: lib/Astro/Nova/EquPosn.pm
+  Astro::Nova::GalPosn:
+    file: lib/Astro/Nova/GalPosn.pm
   Astro::Nova::HMS:
     file: lib/Astro/Nova/HMS.pm
   Astro::Nova::LnLatPosn:

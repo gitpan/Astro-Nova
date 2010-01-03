@@ -320,113 +320,145 @@ DESCRIPTION
     "set_L" for getting/setting the data. All numeric data is intialized to
     zero.
 
-      Astro::Nova::Date, ln_date
-        int years
-        int months
-        int days
-        int hours
-        int minutes
-        double seconds
+    "ln_date"
+      Implemented as "Astro::Nova::Date".
 
-    Astro::Nova::DMS, "ln_dms"
+          int years
+          int months
+          int days
+          int hours
+          int minutes
+          double seconds
 
-        unsigned short  neg
-        unsigned short  degrees
-        unsigned short  minutes
-        double  seconds
-  
-      Astro::Nova::EllOrbit, ln_ell_orbit
-        double  a
-        double  e
-        double  i
-        double  w
-        double  omega
-        double  n
-        double  JD
-  
-      Astro::Nova::EquPosn, ln_equ_posn
-        double  ra
-        double  dec
-  
-      Astro::Nova::GalPosn, ln_gal_posn
-        double  l
-        double  b
-  
-      Astro::Nova::HelioPosn, ln_helio_posn
-        double  L
-        double  B
-        double  R
+    "ln_dms"
+      Implemented as Astro::Nova::DMS.
 
-    Astro::Nova::HMS, ln_hms
+          unsigned short  neg
+          unsigned short  degrees
+          unsigned short  minutes
+          double  seconds
 
-        unsigned short  hours
-        unsigned short  minutes
-        double  seconds
-  
-      Astro::Nova::HrzPosn, ln_hrz_posn
-        double  az
-        double  alt
-  
-      Astro::Nova::HypOrbit, ln_hyp_orbit
-        double  q
-        double  e
-        double  i
-        double  w
-        double  omega
-        double  JD
+    "ln_ell_orbit"
+      Implemented as "Astro::Nova::EllOrbit".
 
-    Astro::Nova::LnLatPosn, "ln_lnlat_posn"
+          double  a
+          double  e
+          double  i
+          double  w
+          double  omega
+          double  n
+          double  JD
 
-        double  lng
-        double  lat
-  
-      Astro::Nova::Nutation, ln_nutation
-        double  longitude
-        double  obliquity
-        double  ecliptic
-  
-      Astro::Nova::ParOrbit, ln_par_orbit
-        double  q
-        double  i
-        double  w
-        double  omega
-        double  JD
-  
-      Astro::Nova::RectPosn, ln_rect_posn
-        double  X
-        double  Y
-        double  Z
-  
-      Astro::Nova::RstTime, ln_rst_time
-        double  rise
-        double  set
-        double  transit
+    "ln_equ_posn"
+      Implemented as Astro::Nova::EquPosn.
 
-    Astro::Nova::ZoneDate, "ln_zonedate"
+          double  ra
+          double  dec
 
-        int  years
-        int  months
-        int  days
-        int  hours
-        int  minutes
-        double  seconds
-        long  gmtoff
+    "ln_gal_posn"
+      Implemented as Astro::Nova::GalPosn.
+
+          double  l
+          double  b
+
+    "ln_helio_posn"
+      Implemented as "Astro::Nova::HelioPosn".
+
+          double  L
+          double  B
+          double  R
+
+    "ln_hms"
+      Implemented as Astro::Nova::HMS.
+
+          unsigned short  hours
+          unsigned short  minutes
+          double  seconds
+
+    "ln_hrz_posn"
+      Implemented as "Astro::Nova::HrzPosn".
+
+          double  az
+          double  alt
+
+    "ln_hyp_orbit"
+      Implemented as "Astro::Nova::HypOrbit".
+
+          double  q
+          double  e
+          double  i
+          double  w
+          double  omega
+          double  JD
+
+    "ln_lnlat_posn"
+      Implemented as Astro::Nova::LnLatPosn.
+
+          double  lng
+          double  lat
+
+    "ln_nutation"
+      Implemented as "Astro::Nova::Nutation".
+
+          double  longitude
+          double  obliquity
+          double  ecliptic
+
+    "ln_par_orbit"
+      Implemented as "Astro::Nova::ParOrbit".
+
+          double  q
+          double  i
+          double  w
+          double  omega
+          double  JD
+
+    "ln_rect_posn"
+      Implemented as "Astro::Nova::RectPosn".
+
+          double  X
+          double  Y
+          double  Z
+
+    "ln_rst_time"
+      Implemented as "Astro::Nova::RstTime".
+
+          double  rise
+          double  set
+          double  transit
+
+    "ln_zonedate"
+      Implemented as Astro::Nova::ZoneDate.
+
+          int  years
+          int  months
+          int  days
+          int  hours
+          int  minutes
+          double  seconds
+          long  gmtoff
 
     These are "human readable" composite structs that contain others.
     Accessing their memebers with a getter method will return a new copy of
     the contained structure.
 
-      Astro::Nova::HEquPosn, lnh_equ_posn
-        struct ln_hms ra
-        struct ln_dms dec
-  
-      Astro::Nova::HHrzPosn, lnh_hrz_posn
-        struct ln_dms az
-        struct ln_dms alt
-  
-      Astro::Nova::HLnLatPosn, lnh_lnlat_posn
-        struct ln_dms lng
-        struct ln_dms lat
+    "lnh_equ_posn"
+      Implemented as "Astro::Nova::HEquPosn".
+
+          struct ln_hms ra
+          struct ln_dms dec
+
+    "lnh_hrz_posn"
+      Implemented as "Astro::Nova::HHrzPosn".
+
+          struct ln_dms az
+          struct ln_dms alt
+
+    "lnh_lnlat_posn"
+      Implemented as "Astro::Nova::HLnLatPosn".
+
+          struct ln_dms lng
+          struct ln_dms lat
 
 SEE ALSO
     libnova website: <http://libnova.sourceforge.net/>
@@ -435,7 +467,7 @@ AUTHOR
     Steffen Mueller, <smueller@cpan.org>
 
 COPYRIGHT AND LICENSE
-    The Astro::Nova wrapper of libnova is copyright (C) 2009 by Steffen
+    The Astro::Nova wrapper of libnova is copyright (C) 2009-2010 by Steffen
     Mueller.
 
     The wrapper code is free software; you can redistribute it and/or modify

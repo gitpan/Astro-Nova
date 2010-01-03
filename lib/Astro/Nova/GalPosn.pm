@@ -1,4 +1,4 @@
-package Astro::Nova::ZoneDate;
+package Astro::Nova::GalPosn;
 
 use 5.008;
 use strict;
@@ -9,19 +9,14 @@ use Astro::Nova;
 # basic stuff is in Astro::Nova's XS!
 
 sub members {
-  return qw/years months days hours minutes seconds gmtoff/;
+  return qw/l b/;
 }
 
 sub as_ascii {
   my $self = shift;
   my $template = <<'HERE';
-Year:       %d
-Month:      %d
-Day:        %d
-Hours:      %d
-Minutes:    %d
-Seconds:    %f
-GMT Offset: %d
+Gal. Longitude:  %f
+Gal. Latitude:   %f
 HERE
   return sprintf($template, $self->get_all());
 }
@@ -42,17 +37,41 @@ sub set_all {
   return 1;
 }
 
+sub from_equatorial_B1950 {
+  my $class = shift;
+  my $obj = shift->to_galactic_B1950();
+  return $obj if not ref $class;
+  $class->set_all($obj->get_all());
+  return $class;
+}
+
+sub from_equatorial_J2000 {
+  my $class = shift;
+  my $obj = shift->to_galactic_J2000();
+  return $obj if not ref $class;
+  $class->set_all($obj->get_all());
+  return $class;
+}
+
+sub to_equatorial_B1950 {
+  return Astro::Nova::get_equ_from_gal(shift);
+}
+
+sub to_equatorial_J2000 {
+  return Astro::Nova::get_equ2000_from_gal(shift);
+}
+
 1;
 __END__
 
 =head1 NAME
 
-Astro::Nova::ZoneDate - Perl representation of a libnova ln_zonedate
+Astro::Nova::GalPosn - Perl representation of a libnova ln_gal_posn
 
 =head1 SYNOPSIS
 
   use Astro::Nova qw(functions ...);
-  my $date = Astro::Nova::ZoneDate->new();
+  my $date = Astro::Nova::GalPosn->new();
   $date->set_year(...);
   # ...
   print $date->as_ascii(), "\n";
@@ -60,23 +79,18 @@ Astro::Nova::ZoneDate - Perl representation of a libnova ln_zonedate
 
 =head1 DESCRIPTION
 
-This class represents a libnova C<ln_zonedate> struct. The struct has the following layout:
+This class represents a libnova C<ln_gal_posn> struct. The struct has the following layout:
 
-  ln_zonedate {
-    int  years
-    int  months
-    int  days
-    int  hours
-    int  minutes
-    double  seconds
-    long  gmtoff
+  ln_gal_posn {
+    double  l # galactic longitude
+    double  b # galactic latitude
   }
 
 =head1 METHODS
 
 =head2 new
 
-Constructor returns a new C<Astro::Nova::ZoneDate>.
+Constructor returns a new C<Astro::Nova::GalPosn>.
 Optionally takes key/value pairs for setting the struct members.
 Extra arguments are ignored. Uninitialized struct members are set to zero.
 
@@ -100,6 +114,19 @@ Returns a human-readable ASCII table of the date information.
 =head2 members
 
 Returns a list of all members in order.
+
+=head2 to_equatorial_B1950 / to_equatorial_J2000
+
+Convert to equatorial coordinates with respect to the B1950 or J2000
+epochs (returns an L<Astro::Nova::EquPosn> object).
+
+=head2 from_equatorial_B1950 / from_equatorial_J2000
+
+When called as a class method, creates a new C<Astro::Nova::GalPosn> object from the
+given C<Astro::Nova::EquPosn> object. Uses the B1950/J2000 epochs according to
+the method name.
+
+When called as an object method, sets the current object's state instead.
 
 =head1 SEE ALSO
 
