@@ -9,14 +9,12 @@ our @ISA = 'Module::Build';
 use File::Spec;
 use Config;
 
-our $NovaDir = 'libnova-0.13.0';
+our $NovaDir = 'libnova-0.15.0';
 our $NovaDirStaticLib = File::Spec->catfile($NovaDir, 'src', '.libs', 'libnova'.$Config::Config{lib_ext});
-our $Typemaps = ['mytype.map', 'perlobject.map'];
 
 sub ACTION_code {
   my $self = shift;
   $self->depends_on("libnova");
-  $self->depends_on("fixtypemaps");
   $self->depends_on("structs");
   return $self->SUPER::ACTION_code(@_);
 }
@@ -63,29 +61,9 @@ sub ACTION_libnova {
   return 1;
 }
 
-sub ACTION_fixtypemaps {
-  my $self = shift;
-  require ExtUtils::Typemap;
-  if (-f 'typemap') {
-    $self->log_warn("typemap exists... overwriting\n");
-    unlink('typemap');
-  }
-  my $typemap = ExtUtils::Typemap->new(file => 'typemap');
-  $self->log_info("Merging typemaps to 'typemap'...\n");
-  foreach my $typemap_file (@$Typemaps) {
-    die "Can't find typemap file '$typemap_file'"
-      if not -f $typemap_file;
-    $typemap->merge(typemap => ExtUtils::Typemap->new(file => $typemap_file));
-  }
-  $typemap->write();
-  $self->add_to_cleanup('typemap');
-  return 1;
-}
-
 sub ACTION_structs {
   my $self = shift;
   $self->depends_on("libnova");
-  $self->depends_on("fixtypemaps");
   $self->log_info("Generating XS/Structs.xs...\n");
   system($^X, File::Spec->catfile("buildtools", "makeNovaClass.pl"))
     and die "Failed to build XS/Structs.xs";

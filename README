@@ -8,7 +8,7 @@ SYNOPSIS
       ...
 
 DESCRIPTION
-    A libnova wrapper that includes a copy of libnova 0.13.0 itself for
+    A libnova wrapper that includes a copy of libnova 0.15.0 itself for
     static linking. See "COPYRIGHT AND LICENSE" for licensing details. The
     goal of this documentation is to document the Perl wrapper, not to
     reproduce the entire libnova documentation. Please find the
@@ -40,6 +40,7 @@ DESCRIPTION
   
       airmass.h
         double get_airmass(double alt, double airmass_scale)
+        double get_alt_from_airmass(double X, double airmass_scale)
   
       angular_separation.h
         double get_angular_separation(Astro::Nova::EquPosn posn1, Astro::Nova::EquPosn posn2)
@@ -467,7 +468,7 @@ AUTHOR
     Steffen Mueller, <smueller@cpan.org>
 
 COPYRIGHT AND LICENSE
-    The Astro::Nova wrapper of libnova is copyright (C) 2009-2010 by Steffen
+    The Astro::Nova wrapper of libnova is copyright (C) 2009-2013 by Steffen
     Mueller.
 
     The wrapper code is free software; you can redistribute it and/or modify
